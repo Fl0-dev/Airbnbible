@@ -1,0 +1,6 @@
+{% block body %}
+{#    {{ dump(housing) }}#}
+    <h1>{{ housing.owner.firstname }} {{ housing.owner.lastname }} vous propose 1 {{ housing.category.name }}</h1>
+
+    <p>Visible au {{ housing.adress }} dans la ville de {{ housing.city }}, à {{ housing.dailyPrice }} euros par nuit !</p>
+{% endblock %}
