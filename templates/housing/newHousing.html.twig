@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Création{% endblock %}
+
+{% block body %}
+    <section class="new-post-form container">
+        <h1>Enregistrer un logement</h1>
+        {{form_start(form)}}
+        {{form_widget(form)}}
+        <button class="btn-primary btn-lg">Enregistrer</button>
+        {{form_end(form)}}
+    </section>
+
+{% endblock %}

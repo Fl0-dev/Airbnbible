@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{parent()}} | home{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div>
+        <h1>Devenir Hôte ?</h1>
+        <div>
+            <p>Veuillez enregistrer un logement:</p>
+            <a href="{{ path('newHousing') }}">Créer</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -6,7 +6,10 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import 'bootstrap';
+import './styles/custom.scss';
+import './js/main.js'
+import '@fortawesome/fontawesome-free/js/all.js';
 
 // start the Stimulus application
-import './bootstrap';
+//import './bootstrap';

@@ -6,6 +6,7 @@ use App\Repository\HousingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HousingRepository::class)]
 class Housing
@@ -16,7 +17,7 @@ class Housing
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $adress;
+    private $address;
 
     #[ORM\Column(type: 'integer')]
     private $postalCode;
@@ -38,12 +39,14 @@ class Housing
     private $category;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $rooms;
 
     #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings')]
     private $equipments;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Ville obligatoire')]
     private $city;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class)]
@@ -51,6 +54,11 @@ class Housing
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class)]
     private $photos;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $description;
+
+
 
     public function __construct()
     {
@@ -65,14 +73,14 @@ class Housing
         return $this->id;
     }
 
-    public function getAdress(): ?string
+    public function getAddress(): ?string
     {
-        return $this->adress;
+        return $this->address;
     }
 
-    public function setAdress(string $adress): self
+    public function setAddress(string $adress): self
     {
-        $this->adress = $adress;
+        $this->address = $adress;
 
         return $this;
     }
@@ -271,6 +279,18 @@ class Housing
                 $photo->setHousing(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
