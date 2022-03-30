@@ -38,7 +38,7 @@ class Housing
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class)]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private $rooms;
 

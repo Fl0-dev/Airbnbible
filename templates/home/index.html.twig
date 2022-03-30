@@ -8,24 +8,26 @@
     <div>
         <h1>Voici notre bible à nous 🤩 : </h1>
         <div>
+
             {% for house in houses %}
                 <div class="card mt-2">
                     <div class="card-body">
                         <h5 class="card-title">{{ house.category.name }}</h5>
-
                         <p class="card-text">{{ house.description|slice(0, 50) ~ '...'}} </p>
-
-                        <p><a href="#" class="card-link mr-4">
-                                {{ house.owner.firstname }} {{ house.owner.lastname }}
-                            </a></p>
+                        <p>
+                            Hôte : <a href="#" class="card-link mr-4">{{ house.owner.firstname }} {{ house.owner.lastname }}</a>
+                        </p>
+                        <p> Nb de chambres : {{ house.rooms|length }}</p>
                         <div class="card-bottom">
                             <div class="row card-bottom-right">
+                                {% if app.user == house.owner %}
                                 <a href="{{ path('editHousing',{id:house.id}) }}">Editer</a>
+                                <a href="{{ path('addRoom',{id:house.id}) }}" class="btn btn-secondary">Ajouter chambre</a>
+                                {% endif %}
                                 <p></p>
                             </div>
                         </div>
                     </div>
-
                 </div>
             {% endfor %}
 

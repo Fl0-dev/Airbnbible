@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Création Chambre{% endblock %}
+
+{% block body %}
+    <section class="new-post-form container">
+        <h1>Enregistrer une chambre</h1>
+        {{form_start(form)}}
+        {{form_row(form.size)}}
+        <h2> Ajouter lits :</h2>
+        <ul class="beds" data-index="{{ form.bedRooms|length > 0 ? form.bedRooms|last.vars.name + 1 : 0}}"
+        >
+            {% for bed in form.bedRooms %}
+                <li>{{ form_row(bed.quantity) }}</li>
+                <li>{{ form_row(bed.bed) }}</li>
+            {% endfor %}
+            <button type="button" class="btn btn-secondary add_item_link">Add a bed</button>
+        </ul>
+        <button class="btn-primary btn-lg submit" type="submit">Enregistrer</button>
+        <div class="form-bed" hidden>
+            {{ form_widget(form.bedRooms.vars.prototype) }}
+        </div>
+        {{form_end(form)}}
+    </section>
+
+{% endblock %}
