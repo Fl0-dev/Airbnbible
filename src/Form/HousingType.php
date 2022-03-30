@@ -23,25 +23,11 @@ class HousingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('address')
-            ->add('postalCode',TextType::class,[
-                //'mapped' => false
-            ])
             //->add('city')
-            ->add('availablePlaces')
-            ->add('dailyPrice')
-            ->add('category', EntityType::class, [
-                'class' => HousingCategory::class,
-                'choice_label' => 'name'
-            ])
-            ->add('equipments', EntityType::class, [
-                'class' => Equipment::class,
-                'choice_label' => 'name',
-                'multiple' => 'true'
-            ])
             ->add('description',TextType::class)
         ;
         $builder->addEventSubscriber(new HousingFormSubscriber($this->em));
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

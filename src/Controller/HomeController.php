@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\HousingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,19 +10,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(HousingRepository $housingRepository): Response
     {
-        $conn = $em->getConnection();
-        $sql = '
-        SELECT ville_nom FROM spec_villes_france_free
-        WHERE ville_code_postal = :code
-        ';
-        $stmt = $conn->prepare($sql);
-        $resultSet = $stmt->executeQuery(['code' => "46100"]);
-
-        $cities = $resultSet->fetchAllAssociative();
+        $allHouses = $housingRepository->findBy([],['createdAt' => 'DESC']);
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'houses' => $allHouses
         ]);
     }
 }

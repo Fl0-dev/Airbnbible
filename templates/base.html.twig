@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}AirBnBible{% endblock %}</title>
-{#    <link rel="icon" href="#" sizes="32x32">#}
+    <link rel="icon" href="{{ asset('img/airbnb.svg') }}" sizes="32x32">
     {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
@@ -14,16 +14,10 @@
     {% endblock %}
 </head>
 <body>
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endfor %}
+
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('home') }}">AirBnBible</a>
+        <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('img/airbnb.svg') }}" width="30px" alt="Logo site">AirBnBible</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -36,6 +30,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('logout')}}">Déconnexion</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Séjourner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('newHousing') }}">Devenir hôte</a>
+                    </li>
+
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
@@ -48,6 +49,14 @@
         </div>
     </div>
 </nav>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
 
 {% block body %}Bonjour{% endblock %}
 </body>

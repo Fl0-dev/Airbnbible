@@ -6,10 +6,29 @@
 
 <div class="container">
     <div>
-        <h1>Devenir Hôte ?</h1>
+        <h1>Voici notre bible à nous 🤩 : </h1>
         <div>
-            <p>Veuillez enregistrer un logement:</p>
-            <a href="{{ path('newHousing') }}">Créer</a>
+            {% for house in houses %}
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ house.category.name }}</h5>
+
+                        <p class="card-text">{{ house.description|slice(0, 50) ~ '...'}} </p>
+
+                        <p><a href="#" class="card-link mr-4">
+                                {{ house.owner.firstname }} {{ house.owner.lastname }}
+                            </a></p>
+                        <div class="card-bottom">
+                            <div class="row card-bottom-right">
+                                <a href="{{ path('editHousing',{id:house.id}) }}">Editer</a>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+
         </div>
     </div>
 

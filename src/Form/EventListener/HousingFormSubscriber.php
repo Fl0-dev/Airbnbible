@@ -2,9 +2,12 @@
 
 namespace App\Form\EventListener;
 
+use App\Entity\Equipment;
+use App\Entity\Housing;
+use App\Entity\HousingCategory;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
@@ -22,8 +25,34 @@ class HousingFormSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::PRE_SUBMIT => 'preSubmitData'
+            FormEvents::PRE_SUBMIT => 'preSubmitData',
+            FormEvents::PRE_SET_DATA => 'preSetData'
         ];
+    }
+
+
+    public function preSetData(FormEvent $event)
+    {
+        $housing = $event->getData();
+        $form = $event->getForm();
+
+        if($housing->getId() === null) {
+            $form->add('availablePlaces')
+                ->add('dailyPrice')
+                ->add('address')
+                ->add('postalCode',TextType::class,[
+                    //'mapped' => false
+                ])
+                ->add('category', EntityType::class, [
+                    'class' => HousingCategory::class,
+                    'choice_label' => 'name'
+                ])
+                ->add('equipments', EntityType::class, [
+                    'class' => Equipment::class,
+                    'choice_label' => 'name',
+                    'multiple' => 'true'
+                ]);
+        }
     }
 
     /**
@@ -33,9 +62,10 @@ class HousingFormSubscriber implements EventSubscriberInterface
     {
 
         $form = $event->getForm();
-        $postalCode = $event->getData()["postalCode"];
 
         if ($form->has('postalCode') && !$form->has('city')) {
+
+            $postalCode = $event->getData()["postalCode"];
 
             $conn = $this->em->getConnection();
             $sql = '
@@ -49,6 +79,7 @@ class HousingFormSubscriber implements EventSubscriberInterface
             foreach ($cities as $city) {
                 $citiesName[$city['ville_nom']] = $city['ville_nom'];
             }
+
             $form->add('city',ChoiceType::class, [
                 'choices' => $citiesName,
             ]);
