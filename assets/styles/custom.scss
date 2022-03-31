@@ -1,6 +1,7 @@
-body {
-  background-color: black;
-}
-
-@import "navbar";
 @import "bootstrap/scss/bootstrap";
+@import "home";
+@import "navbar";
+
+body {
+  background-color: #ebebef;
+}

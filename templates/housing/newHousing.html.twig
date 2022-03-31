@@ -9,6 +9,19 @@
         {{form_widget(form)}}
         <button class="btn-primary btn-lg">Enregistrer</button>
         {{form_end(form)}}
+        <br>
+        {% if house.rooms is not empty%}
+    {% for room in house.rooms %}
+        <div class="card">
+            <p> Chambre{{ room.id }}<a href="#" class="btn btn-danger">Supp</a></p>
+            <p> Nombre de lit : {{ room.bedrooms|length }}</p>
+            {% for bed in room.bedrooms %}
+                <p> Lit{{ bed.id }}<a href="#" class="btn btn-danger">Supp</a></p>
+            {% endfor %}
+
+        </div>
+    {% endfor %}
+        {% endif %}
     </section>
 
 

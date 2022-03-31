@@ -48,22 +48,36 @@ class HousingController extends AbstractController
         ]);
 
     }
+
     #[Route('/edit/housing/{id<\d+>}', name: 'editHousing')]
-        public function editHousing(Housing $housing, Request $request, EntityManagerInterface $entityManager)
-        {
-            $form = $this->createForm(HousingType::class, $housing);
-            $form->handleRequest($request);
+    public function editHousing(Housing $housing, Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->createForm(HousingType::class, $housing);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $housing->setModifiedAt(new \DateTime());
-                $entityManager->flush();
-                $this->addFlash('success', 'Le logement a bien été modifié.');
-                return $this->redirectToRoute('home');
-            }
-
-            return $this->renderForm('housing/newHousing.html.twig', [
-                'form' => $form,
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $housing->setModifiedAt(new \DateTime());
+            $entityManager->flush();
+            $this->addFlash('success', 'Le logement a bien été modifié.');
+            return $this->redirectToRoute('home');
         }
 
+        return $this->renderForm('housing/newHousing.html.twig', [
+            'house' => $housing,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/delete/housing/{id<\d+>}', name: 'deleteHousing')]
+    public function deleteHousing(Housing $housing, EntityManagerInterface $entityManager): Response
+    {
+        if($housing->getBookings()->isEmpty()) {
+            $entityManager->remove($housing);
+        } else {
+            $housing->setIsVisible(false);
+        }
+        $entityManager->flush();
+        $this->addFlash('success', 'Le logement a bien été supprimé.');
+        return $this->redirectToRoute('home');
+    }
 }

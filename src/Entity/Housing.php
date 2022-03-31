@@ -38,11 +38,11 @@ class Housing
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class, cascade: ['persist','remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $rooms;
 
-    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings')]
+    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings', cascade:["persist","remove"])]
     private $equipments;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -52,7 +52,7 @@ class Housing
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class)]
     private $bookings;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class)]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class, cascade:["persist","remove"])]
     private $photos;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -63,7 +63,6 @@ class Housing
 
     #[ORM\Column(type: 'datetime')]
     private $modifiedAt;
-
 
 
     public function __construct()
@@ -105,7 +104,17 @@ class Housing
 
     public function getAvailablePlaces(): ?int
     {
-        return $this->availablePlaces;
+        $nbPlace = 0;
+        $rooms = $this->getRooms();
+        foreach($rooms as $room) {
+            $bedrooms = $room->getBedRooms();
+
+            foreach ($bedrooms as $bedRoom) {
+                $nbPlace = $bedRoom->getQuantity() * $bedRoom->getBed()->getNbPlace();
+            }
+        }
+
+        return $this->availablePlaces = $nbPlace;
     }
 
     public function setAvailablePlaces(int $availablePlaces): self

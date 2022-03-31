@@ -4,25 +4,28 @@
 
 {% block body %}
 
-<div class="container">
-    <div>
+<section class="container">
+    <div class="home-section">
         <h1>Voici notre bible à nous 🤩 : </h1>
-        <div>
+        <div class="card-wrapper">
 
             {% for house in houses %}
                 <div class="card mt-2">
                     <div class="card-body">
-                        <h5 class="card-title">{{ house.category.name }}</h5>
+                        <h5 class="card-title">{{ house.category.name }} <a href="{{ path('deleteHousing', {id:house.id}) }}" class="btn btn-danger">Supp</a></h5>
                         <p class="card-text">{{ house.description|slice(0, 50) ~ '...'}} </p>
                         <p>
                             Hôte : <a href="#" class="card-link mr-4">{{ house.owner.firstname }} {{ house.owner.lastname }}</a>
                         </p>
                         <p> Nb de chambres : {{ house.rooms|length }}</p>
+                        <p> Nb de place : {{ house.availablePlaces }}</p>
                         <div class="card-bottom">
-                            <div class="row card-bottom-right">
+                            <div class="card-bottom-right">
                                 {% if app.user == house.owner %}
-                                <a href="{{ path('editHousing',{id:house.id}) }}">Editer</a>
-                                <a href="{{ path('addRoom',{id:house.id}) }}" class="btn btn-secondary">Ajouter chambre</a>
+                                    <a href="{{ path('editHousing',{id:house.id}) }}" class="btn btn-secondary">Editer</a>
+                                    <a href="{{ path('addRoom',{id:house.id}) }}" class="btn btn-secondary">Ajouter chambre</a>
+                                {% elseif app.user %}
+                                    <a href="#" class="btn btn-dark">Réserver</a>
                                 {% endif %}
                                 <p></p>
                             </div>
@@ -34,5 +37,5 @@
         </div>
     </div>
 
-</div>
+</section>
 {% endblock %}

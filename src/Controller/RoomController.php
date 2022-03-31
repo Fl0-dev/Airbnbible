@@ -45,4 +45,10 @@ class RoomController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
+    public function deleteRoom(Room $room, EntityManagerInterface $entityManager): ?Response
+    {
+        return null;
+    }
 }
