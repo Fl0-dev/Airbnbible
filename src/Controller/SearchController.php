@@ -15,7 +15,7 @@ class SearchController extends AbstractController
         $housingForm = $this->createForm(SearchHousingType::class);
 
         if ($housingForm->isSubmitted() && $housingForm->isValid()){
-            dd($housingForm->getData());
+//            dd($housingForm->getData());
         }
 
         return $this->renderForm('search/index.html.twig', [

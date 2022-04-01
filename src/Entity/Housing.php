@@ -49,7 +49,7 @@ class Housing
     #[Assert\NotBlank(message:'La ville est obligatoire')]
     private $city;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class)]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class, cascade: ["remove", "persist"])]
     private $bookings;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class)]

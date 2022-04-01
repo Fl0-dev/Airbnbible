@@ -15,7 +15,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(EntityManagerInterface $manager, HousingRepository $housingRepo, Request $request): Response
     {
-        $housings = $housingRepo->findLastHousings(4);
+        $housings = [];
 
         $housingForm = $this->createForm(SearchHousingType::class)->handleRequest($request);
 
@@ -24,7 +24,7 @@ class HomeController extends AbstractController
 
             $housings = $housingRepo->findBySearch($data);
         }
-
+//dd($housings);
         return $this->render('home/index.html.twig', [
             'housings' => $housings,
             'form' => $housingForm->createView(),

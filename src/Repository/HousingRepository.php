@@ -57,10 +57,25 @@ class HousingRepository extends ServiceEntityRepository
 
     public function findBySearch($data): array
     {
+        $conn = $this->getEntityManager()->getConnection();
+
         $entryDate = $data['entryDate'];
         $exitDate = $data['exitDate'];
         $nbGuest = $data['availablePlaces'];
         $category = $data['category'];
+        $city = strtoupper($data['city']);
+
+        $latAndLongQuery = "
+SELECT ville_latitude_deg, ville_longitude_deg FROM spec_villes_france_free
+WHERE ville_nom = :city
+";
+        $stmt = $conn->prepare($latAndLongQuery);
+        $resultSet = $stmt->executeQuery(['city' => $city]);
+
+        $city = $resultSet->fetchAssociative();
+//dd($city);
+
+
         $qb =$this->createQueryBuilder('h')
             ->leftJoin('h.bookings', 'b');
         if ($entryDate) {
@@ -79,8 +94,15 @@ class HousingRepository extends ServiceEntityRepository
             $qb->orWhere('h.category = :category')
                 ->setParameter('category', $category);
         }
+        if ($city){
+            $qb->addSelect("ACOS(SIN(PI()*h.latitude/180.0)*SIN(PI()*:lat2/180.0)+COS(PI()*h.latitude/180.0)*COS(PI()*:lat2/180.0)*COS(PI()*:lon2/180.0-PI()*h.longitude/180.0))*6371 AS dist")
+                ->setParameter(":lat2", $city["ville_latitude_deg"])
+                ->setParameter(":lon2", $city["ville_longitude_deg"])
+                ->orderBy("dist");
+        }
 
         $query = $qb->getQuery();
+//        dd($query->execute());
         return $query->execute();
     }
 

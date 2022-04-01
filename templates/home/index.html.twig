@@ -2,10 +2,14 @@
 
 {% block title %}Home{% endblock %}
 
+
 {% block body %}
 
     {{ form_start(form) }}
         <div class="row d-flex align-items-center">
+            <div class="col-2">
+                {{form_row(form.city)}}
+            </div>
             <div class="col-2">
                 {{form_row(form.entryDate)}}
             </div>
@@ -25,12 +29,15 @@
     {{ form_end(form) }}
 
     {% for housing in housings %}
+        {% set dist = housing["dist"] %}
+        {% set housing = housing[0] %}
         <h2><a href="{{ path('housingDetails', {id:housing.id}) }}">{{ housing.title }}</a></h2>
-        <h3>{{ housing.city }}</h3>
+        <h3>{{ housing.city  }}</h3>
         <a href="#">{{ housing.category.name }}</a>
-        <p>{{ housing.adress }}</p>
+        <p>{{ housing.adress  }}</p>
         <p>Places :{{ housing.availablePlaces }}</p>
         <p>Prix : {{ housing.dailyPrice }}</p>
+        <p>Distance : {{ dist | round }} km de {{ housing.city | capitalize }}</p>
     {% endfor %}
 
 
