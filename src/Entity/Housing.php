@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\HousingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\HousingRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HousingRepository::class)]
 class Housing
@@ -34,23 +35,48 @@ class Housing
     private $isVisible;
 
     #[ORM\ManyToOne(targetEntity: HousingCategory::class, inversedBy: 'housings')]
-    #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class)]
+    #[ORM\Column(type: 'text')]
+    private $description;
+
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class, cascade:["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: true)]
     private $rooms;
 
-    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings')]
+    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings', cascade:["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: true)]
     private $equipments;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Ville obligatoire')]
     private $city;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private $bookings;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private $photos;
+
+    #[ORM\Column(type: 'datetime')]
+    private $createdAt;
+
+    #[ORM\Column(type: 'datetime')]
+    private $modifiedAt;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $title;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isDeleted;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $latitude;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $longitude;
 
     public function __construct()
     {
@@ -145,6 +171,42 @@ class Housing
     public function setCategory(?HousingCategory $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string 
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getModifiedAt(): ?\DateTimeInterface
+    {
+        return $this->modifiedAt;
+    }
+
+    public function setModifiedAt(\DateTimeInterface $modifiedAt): self
+    {
+        $this->modifiedAt = $modifiedAt;
 
         return $this;
     }
@@ -271,6 +333,54 @@ class Housing
                 $photo->setHousing(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?string $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?string $longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookingController!{% endblock %}
+
+{% block body %}
+{{form_start(form)}}
+{{ form_row(form.entryDate) }}
+{{ form_row(form.exitDate) }}
+{{ form_row(form.guests) }}
+{{ form_row(form.submit, { 'label': 'Réserver' }) }}
+{{form_end(form)}}
+{% endblock %}

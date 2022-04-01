@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookingController!{% endblock %}
+
+{% block body %}
+
+<h1>Mes réservations</h1>
+<ul>
+{% for booking in bookings %}
+
+    <li class="card">
+        <div class="card-body">
+            <h2 class="card-title">{{ booking.housing.title }}</h2>
+            <p class="card-text">
+            Adresse: <br />
+            {{ booking.housing.adress }}<br />
+            {{ booking.housing.postalCode }}<br />
+            {{ booking.housing.city }}
+            </p>
+            <p class="card-text">Début du séjour: {{ booking.entryDate|date('d-m-Y') }}</p>
+            <p class="card-text">Fin du séjour: {{ booking.exitDate|date('d-m-Y') }}</p>
+            <p class="card-text">Nombre d'invités: {{ booking.guests }}</p>
+            <p class="card-text">Prix journalier: {{ booking.housing.dailyPrice }}€</p>
+            <p class="card-text">Prix total: {{ booking.totalPrice }}€</p>
+        </div>
+    </li>
+    
+{% endfor %}
+</ul>
+{% endblock %}

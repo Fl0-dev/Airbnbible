@@ -45,6 +45,40 @@ class HousingRepository extends ServiceEntityRepository
         }
     }
 
+    public function findBySearch($array)
+    {
+        $qb = $this->createQueryBuilder('h')
+            ->leftJoin('h.bookings', 'b');
+            if($array['city']) {
+                $qb->andWhere('h.city = :city')
+                    ->setParameter('city', $array['city']);
+            }
+            if($array['category']) {
+                $qb->andWhere('h.category = :category')
+                    ->setParameter('category', $array['category']);
+            }
+            if($array['availablePlaces']) {
+                $qb->andWhere('h.availablePlaces >= :availablePlaces')
+                    ->setParameter('availablePlaces', $array['availablePlaces']);
+            }
+            if($array['dailyPrice']) {
+                $qb->andWhere('h.dailyPrice <= :dailyPrice')
+                    ->setParameter('dailyPrice', $array['dailyPrice']);
+            }
+            if($array['exitDate'] > $array['entryDate']) {
+                if($array['entryDate']) {
+                    $qb->andWhere('b.exitDate < :entryDate OR b.exitDate IS NULL')
+                        ->setParameter('entryDate', $array['entryDate']);
+                }
+                if($array['exitDate']) {
+                    $qb->andWhere('b.entryDate > :exitDate OR b.entryDate IS NULL')
+                        ->setParameter('exitDate', $array['exitDate']);
+                }
+            }
+        return $qb->getQuery()
+                  ->getResult();
+    }
+
     // /**
     //  * @return Housing[] Returns an array of Housing objects
     //  */

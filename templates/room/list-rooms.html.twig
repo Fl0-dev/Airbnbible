@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RoomController!
+{% endblock %}
+
+{% block body %}
+	<ul>
+		{% for room in rooms %}
+			<li class="card">
+				<div class="card-body">
+					<h2 class="card-title">
+						<a href="{{ path('room-details', {id: room.id}) }}" class="">Chambre n°{{ loop.index }}</a>
+					</h2>
+					<p class="card-text">Room size:
+						{{ room.size }}m²</p>
+					<a href="{{ path('add-bedroom', {id: room.id}) }}" class="btn btn-primary">Ajouter lits</a>
+					<a href="{{ path('delete-room', {id: room.id}) }}" class="btn btn-danger">Supprimer chambre</a>
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

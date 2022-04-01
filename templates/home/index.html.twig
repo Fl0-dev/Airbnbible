@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!
+{% endblock %}
+
+{% block body %}
+	<section class="py-5 text-center container">
+		<div class="row py-lg-5">
+			<div class="col-lg-6 col-md-8 mx-auto my-auto">
+				<h1 class="fw-light">Air BnBible</h1>
+				<p class="lead text-muted">« Si quelqu'un vient à vous et n'apporte pas cette doctrine, ne le recevez pas dans votre maison, et ne lui dites pas : Salut ! car celui qui lui dit : Salut ! participe à ses mauvaises œuvres » - (2 Jean 10-11). <br /> Ne recevons pas en notre demeure les hérétiques reniant le vrai Christ.</p>
+				<div class="d-flex justify-content-center">
+					{{form_start(form)}}
+					<div class="d-flex flex-row justify-content-evenly align-items-end searchbar">
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.city, null) }} #}
+							{{ form_widget(form.city, { 'attr': {'placeholder': 'Ville' }}) }}
+						</div>
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.category, 'Category') }} #}
+							{{form_widget(form.category, { 'placeholder': 'Null' })}}
+						</div>
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.dailyPrice, 'Prix journalier') }} #}
+							{{form_widget(form.dailyPrice, { 'attr': {'placeholder': 'Prix' }})}}
+						</div>
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.availablePlaces, 'Croyants') }} #}
+							{{form_widget(form.availablePlaces, { 'attr': {'placeholder': 'Croyants' }})}}
+						</div>
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.availablePlaces, 'Croyants') }} #}
+							{{form_widget(form.entryDate, { 'attr': {'placeholder': 'Début' }})}}
+						</div>
+						<div class="d-flex flex-column">
+							{# {{ form_label(form.availablePlaces, 'Croyants') }} #}
+							{{form_widget(form.exitDate, { 'attr': {'placeholder': 'Fin' }})}}
+						</div>
+						<div class="d-flex flex-column align-items-end">
+							{{ form_widget(form.submit, { 'label': 'Search' }) }}
+						</div>
+					</div>
+					{{form_end(form)}}
+				</div>
+			</div>
+		</div>
+	</section>
+	<div class="album py-5 bg-light">
+		<div class="container">
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+				{% for housing in housings %}
+					<div class="col">
+						<div class="card shadow-sm">
+							<svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveaspectratio="xMidYMid slice" focusable="false">
+								<title>{{housing.title}}</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text>
+							</svg>
+
+							<div class="card-body">
+								<p class="card-title">{{housing.title}}</p>
+								<p class="card-text">{{housing.category.name}} - {{housing.city}}</p>
+								<p class="card-text">{{housing.dailyPrice}}€/nuit</p>
+								<div class="d-flex justify-content-between align-items-center">
+									<div class="btn-group">
+										<a href="{{ path('app_booking', {id: housing.id}) }}" class="btn btn-sm btn-outline-primary">Réserver bien</a>
+									</div>
+									<small class="text-muted"></small>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

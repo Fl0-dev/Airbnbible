@@ -36,6 +36,9 @@ class Booking
     #[ORM\JoinColumn(nullable: false)]
     private $housing;
 
+    #[ORM\Column(type: 'integer')]
+    private $guests;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +124,18 @@ class Booking
     public function setHousing(?Housing $housing): self
     {
         $this->housing = $housing;
+
+        return $this;
+    }
+
+    public function getGuests(): ?int
+    {
+        return $this->guests;
+    }
+
+    public function setGuests(int $guests): self
+    {
+        $this->guests = $guests;
 
         return $this;
     }

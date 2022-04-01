@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!
+{% endblock %}
+
+{% block body %}
+	{% if (is_granted('ROLE_USER')) %}
+	<h1>Mes biens</h1>
+		<ul>
+			{% for housing in housings %}
+				<li class="card">
+					<div class="card-body">
+						<h2 class="card-title">{{ housing.title }}</h2>
+						<p class="card-subtitle">{% if housing.isVisible %}Visible{% else %}Non visible
+						{% endif %}</p>
+						<a href="{{ path('housing-visibility', {id: housing.id}) }}" class="card-link">Modifier visibilité</a>
+						<p class="card-text">{{ housing.description }}</p>
+						<p class="card-text">
+                            {{ housing.adress }}<br />
+                            {{ housing.postalCode }}<br />
+                            {{ housing.city }}
+                        </p>
+						{# <p>{{ housing.description }}</p>
+															<p>{{ housing.createdAt }}</p> #}
+						<a href="{{ path('updating-housing', {id: housing.id}) }}" class="btn btn-primary">Modifier bien</a>
+						<a href="{{ path('add-bedroom-and-room', {id: housing.id}) }}" class="btn btn-primary">Ajouter chambre(s)</a>
+						<a href="{{ path('room-list', {id: housing.id}) }}" class="btn btn-primary">Liste chambres</a>
+						<a href="{{ path('delete-housing', {id: housing.id}) }}" class="btn btn-danger">Supprimer bien</a>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}
