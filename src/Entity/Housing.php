@@ -66,7 +66,7 @@ class Housing
 
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $latitute;
+    private $latitude;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $longitude;
@@ -345,17 +345,23 @@ class Housing
         return $nbPlace;
     }
 
-    public function getLatitute(): ?string
+    /**
+     * @return mixed
+     */
+    public function getLatitude()
     {
-        return $this->latitute;
+        return $this->latitude;
     }
 
-    public function setLatitute(?string $latitute): self
+    /**
+     * @param mixed $latitude
+     */
+    public function setLatitude($latitude): void
     {
-        $this->latitute = $latitute;
-
-        return $this;
+        $this->latitude = $latitude;
     }
+
+
 
     public function getLongitude(): ?string
     {

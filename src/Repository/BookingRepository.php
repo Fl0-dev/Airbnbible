@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Booking;
+use App\Entity\Housing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -19,6 +20,14 @@ class BookingRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Booking::class);
+    }
+
+
+    public function getCalendar(Housing $housing) {
+        $qb = $this->createQueryBuilder("b")
+        ->where('b.housing = :housing')
+        ->setParameter('housing', $housing->getId());
+        return $qb->getQuery()->getResult();
     }
 
     /**

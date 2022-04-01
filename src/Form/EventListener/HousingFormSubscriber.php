@@ -77,8 +77,8 @@ class HousingFormSubscriber implements EventSubscriberInterface
             $cities = $resultSet->fetchAllAssociative();
             $citiesName = [];
             foreach ($cities as $city) {
-                $citiesName[$city['ville_nom']] = json_encode(
-                    $city['ville_nom'], $city['ville_latitude_deg'], $city['ville_longitude_deg']);
+                $citiesName[$city['ville_nom']] = json_encode([
+                    $city['ville_nom'], $city['ville_latitude_deg'], $city['ville_longitude_deg']]);
             }
 
             $form->add('city',ChoiceType::class, [

@@ -50,6 +50,23 @@ class BookingController extends AbstractController
 
         return $this->renderForm('booking/reservation.html.twig', [
             'form' => $form,
+            'housingId' =>$housing->getId()
         ]);
+    }
+
+    #[Route('/getbookings/{id}', name: 'get-bookings')]
+    public function calendar(Housing $housing, BookingRepository $bookingRepository): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $bookings = $bookingRepository->findBy(['housing'=>$housing]);
+        $dates = [];
+        foreach($bookings as $booking) {
+            $title = 'Réservé';
+            $entryDate = $booking->getEntryDate()->format('Y-m-d');
+            $exitDate=$booking->getEntryDate()->format('Y-m-d');
+            $dates[] = ['title' => $title, 'start' => $entryDate, 'end' => $exitDate];
+
+        }
+
+        return $this->json($dates);
     }
 }

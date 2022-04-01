@@ -17,6 +17,10 @@
         <div class="card-wrapper">
 
             {% for house in houses %}
+                {% if house["dist"] is defined %}
+                    {% set dist = house["dist"] %}
+                    {% set house = house[0] %}
+                {% endif %}
                 <div class="card mt-2">
                     <div class="card-body">
                         <h5 class="card-title">{{ house.category.name }}
@@ -30,6 +34,9 @@
                         </p>
                         <p> Nb de chambres : {{ house.rooms|length }}</p>
                         <p> Nb de place : {{ house.availablePlaces }}</p>
+                        {% if house["dist"] is defined %}
+                            <p>Distance : {{ dist | round }} km de {{ house.city | capitalize }}</p>
+                        {% endif %}
                         <div class="card-bottom">
                             <div class="card-bottom-right">
                                 {% if app.user == house.owner %}

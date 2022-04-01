@@ -56,7 +56,13 @@ class HousingRepository extends ServiceEntityRepository
         $exitDate = $data['exitDate'];
         $nbGuest = $data['nbGuest'];
         $category = $data['category'];
-        $localisation = $data['localisation'];
+        $localisation = strtoupper($data['localisation']);
+
+        $conn = $this->getEntityManager()->getConnection();
+        $coordRequete = "select ville_latitude_deg, ville_longitude_deg from spec_villes_france_free where ville_nom = :city;" ;
+        $stmt = $conn->prepare($coordRequete);
+        $resultSet = $stmt->executeQuery(['city' => $localisation]);
+        $localisation = $resultSet->fetchAssociative();
 
         $qb =$this->createQueryBuilder('h');
         $qbDate = $this->createQueryBuilder('h2');
@@ -71,12 +77,12 @@ class HousingRepository extends ServiceEntityRepository
                 ->setParameter('exitDate', $exitDate);
         }
         if ($nbGuest) {
-            //$qb->andWhere('h.availablePlaces >= :nbGuest')
-                $qb->join('h.rooms', 'r')
-                    ->join('r.bedRooms', 'br')
-                    ->join('br.bed','bb')
-                    ->groupBy('h')
-                    ->having('SUM(br.quantity * bb.nbPlace) >= :nbGuest')
+            $qb->andWhere('h.availablePlaces >= :nbGuest')
+//                $qb->join('h.rooms', 'r')
+//                    ->join('r.bedRooms', 'br')
+//                    ->join('br.bed','bb')
+//                    ->groupBy('h')
+//                    ->having('SUM(br.quantity * bb.nbPlace) >= :nbGuest')
                    ->setParameter('nbGuest', $nbGuest);
         }
         if ($category) {
@@ -84,8 +90,10 @@ class HousingRepository extends ServiceEntityRepository
                 ->setParameter('category', $category);
         }
         if ($localisation) {
-            $qb->andWhere('h.postalCode LIKE :localisation')
-                ->setParameter('localisation', '%'. $localisation .'%');
+            $qb->addSelect("ACOS(SIN(PI()*h.latitude/180.0)*SIN(PI()*:lat2/180.0)+COS(PI()*h.latitude/180.0)*COS(PI()*:lat2/180.0)*COS(PI()*:lon2/180.0-PI()*h.longitude/180.0))*6371 AS dist")
+                ->setParameter(":lat2", $localisation["ville_latitude_deg"])
+                ->setParameter(":lon2", $localisation["ville_longitude_deg"])
+                ->orderBy("dist");
         }
 
         $query = $qb->getQuery();

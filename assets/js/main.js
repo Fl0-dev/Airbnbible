@@ -11,6 +11,7 @@
 //     collectionHolder.appendChild(item);
 //     collectionHolder.dataset.index++;
 // };
+import './calendar'
 
 let formBed = document.querySelector('.form-bed')
 let ul = document.querySelector('.beds')
