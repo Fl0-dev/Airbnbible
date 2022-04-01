@@ -29,29 +29,31 @@ class HousingFormSubscriber implements EventSubscriberInterface
     }
 
     public function onPreSubmitting(FormEvent $event) {
+        $citiesTab = [];
         $form = $event->getForm();
 
-        
-        if($form->has('postalCode') && !$form->has('city')) {
-            $postalCode = $event->getData()["postalCode"];
-            
-            $db = $this->manager->getConnection();
-            $sql = '
-            SELECT ville_nom FROM spec_villes_france
-            WHERE ville_code_postal LIKE :code
-            ';
-            $stmt = $db->prepare($sql);
-            $resultSet = $stmt->executeQuery(['code' => '%' . $postalCode . '%']);
-    
+        if ($form->has("postalCode") && !$form->has("city")) {
+            $postalCode = $event->getData()['postalCode'];
+
+            $conn = $this->manager->getConnection();
+            $sql = "
+            SELECT ville_nom, ville_latitude_deg, ville_longitude_deg  FROM spec_villes_france
+            WHERE ville_code_postal LIKE :code";
+
+            $stmt = $conn->prepare($sql);
+            $resultSet = $stmt->executeQuery(['code' => "%" . $postalCode . "%"]);
             $cities = $resultSet->fetchAllAssociative();
-            // dd($cities);
-            $formatedCities = [];
-            foreach($cities as $city) {
-                $formatedCities[$city['ville_nom']] = $city['ville_nom'];
-            } 
-            // dd($formatedCities); 
+
+            foreach ($cities as $line) {
+                $citiesTab[$line['ville_nom']] = json_encode([
+                    $line['ville_nom'],
+                    $line["ville_latitude_deg"],
+                    $line["ville_longitude_deg"],
+                ]);
+            }
+
             $form->add('city', ChoiceType::class, [
-                'choices' => $formatedCities
+                'choices' => $citiesTab,
             ]);
         }
     }

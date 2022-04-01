@@ -17,7 +17,7 @@ class HomeController extends AbstractController
     public function index(Request $request, HousingRepository $housingRepository): Response
     {
         $housings = [];
-        $housings = $housingRepository->findBy(['isDeleted' => false, 'isVisible' => true]);
+        // $housings = $housingRepository->findBy(['isDeleted' => false, 'isVisible' => true]);
 
         $form = $this->createForm(SearchingType::class);
         $form->handleRequest($request);

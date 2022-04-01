@@ -21,6 +21,7 @@ class BookingController extends AbstractController
     public function index(Housing $housing, Request $request, EntityManagerInterface $manager): Response
     {
         $booking = new Booking();
+        $idHousing = $housing->getId();
 
         $user = $this->getUser();
 
@@ -48,6 +49,7 @@ class BookingController extends AbstractController
         }   
         return $this->renderForm('booking/index.html.twig', [
             'form' => $form,
+            'idHousing' => $idHousing
         ]);
     }
 
@@ -65,5 +67,24 @@ class BookingController extends AbstractController
         return $this->render('booking/list.html.twig', [
             'bookings' => $bookings,
         ]);
+    }
+
+    #[Route('/getbookings/{id}', name: 'get-bookings')]
+    #[IsGranted('ROLE_USER')]
+    public function getBookings(Housing $housing, BookingRepository $bookingRepository): Response
+    {
+        $bookings = [];
+        $newBookings = [];
+
+        $bookings = $bookingRepository->findBy(['housing' => $housing]);
+        
+        foreach($bookings as $booking) {
+            $title = 'réservé';
+            $entryDate = $booking->getEntryDate()->format('Y-m-d');
+            $exitDate = $booking->getExitDate()->format('Y-m-d');
+            $newBookings[] = ['title' => $title, 'start' => $entryDate, 'end' => $exitDate];
+        };
+    
+        return $this->json($newBookings);
     }
 }

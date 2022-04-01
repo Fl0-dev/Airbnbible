@@ -7,6 +7,9 @@
 {{ form_row(form.entryDate) }}
 {{ form_row(form.exitDate) }}
 {{ form_row(form.guests) }}
-{{ form_row(form.submit, { 'label': 'Réserver' }) }}
+{{ form_row(form.save, { 'label': 'Réserver' }) }}
 {{form_end(form)}}
+
+
+<div id="calendar" data-id="{{idHousing}}"></div>
 {% endblock %}

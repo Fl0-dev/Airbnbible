@@ -45,38 +45,62 @@ class HousingRepository extends ServiceEntityRepository
         }
     }
 
-    public function findBySearch($array)
+    public function findBySearch($data)
     {
-        $qb = $this->createQueryBuilder('h')
-            ->leftJoin('h.bookings', 'b');
-            if($array['city']) {
-                $qb->andWhere('h.city = :city')
-                    ->setParameter('city', $array['city']);
-            }
-            if($array['category']) {
-                $qb->andWhere('h.category = :category')
-                    ->setParameter('category', $array['category']);
-            }
-            if($array['availablePlaces']) {
-                $qb->andWhere('h.availablePlaces >= :availablePlaces')
-                    ->setParameter('availablePlaces', $array['availablePlaces']);
-            }
-            if($array['dailyPrice']) {
-                $qb->andWhere('h.dailyPrice <= :dailyPrice')
-                    ->setParameter('dailyPrice', $array['dailyPrice']);
-            }
-            if($array['exitDate'] > $array['entryDate']) {
-                if($array['entryDate']) {
-                    $qb->andWhere('b.exitDate < :entryDate OR b.exitDate IS NULL')
-                        ->setParameter('entryDate', $array['entryDate']);
-                }
-                if($array['exitDate']) {
-                    $qb->andWhere('b.entryDate > :exitDate OR b.entryDate IS NULL')
-                        ->setParameter('exitDate', $array['exitDate']);
-                }
-            }
-        return $qb->getQuery()
-                  ->getResult();
+        $conn = $this->getEntityManager()->getConnection();
+
+        $entryDate = $data['entryDate'];
+        $exitDate = $data['exitDate'];
+        $nbGuest = $data['availablePlaces'];
+        $category = $data['category'];
+        $city = strtoupper($data['city']);
+
+        $latAndLongQuery = "
+        SELECT ville_latitude_deg, ville_longitude_deg FROM spec_villes_france
+        WHERE ville_nom = :city
+        ";
+        $stmt = $conn->prepare($latAndLongQuery);
+        $resultSet = $stmt->executeQuery(['city' => $city]);
+
+        $city = $resultSet->fetchAssociative();
+
+        $qb =$this->createQueryBuilder('h')
+            ->leftJoin('h.bookings', 'b')
+            ->where('h.isVisible = true')
+            ->andWhere('h.isDeleted = false');
+        $qbDate = $this->createQueryBuilder('h2');
+        $qbDate = $qbDate
+            ->innerJoin('h2.bookings', 'b')
+            ->where(':entryDate between b.entryDate and b.exitDate')
+            ->orWhere(':exitDate between b.entryDate and b.exitDate')
+            ->orWhere('b.entryDate between :entryDate and :exitDate');
+        if ($entryDate && $exitDate) {
+            $qb->where($qb->expr()->notIn('h.id',$qbDate->getDQL()))
+                ->setParameter('entryDate', $entryDate)
+                ->setParameter('exitDate', $exitDate);
+        }
+        if ($nbGuest) {
+            //$qb->andWhere('h.availablePlaces >= :nbGuest')
+                $qb->join('h.rooms', 'r')
+                    ->join('r.bedRooms', 'br')
+                    ->join('br.bed','bb')
+                    ->groupBy('h')
+                    ->having('SUM(br.quantity * bb.nbPlace) >= :nbGuest')
+                   ->setParameter('nbGuest', $nbGuest);
+        }
+        if ($category) {
+            $qb->andWhere('h.category = :category')
+                ->setParameter('category', $category);
+        }
+        if ($city){
+            $qb->addSelect("ACOS(SIN(PI()*h.latitude/180.0)*SIN(PI()*:lat2/180.0)+COS(PI()*h.latitude/180.0)*COS(PI()*:lat2/180.0)*COS(PI()*:lon2/180.0-PI()*h.longitude/180.0))*6371 AS dist")
+                ->setParameter(":lat2", $city["ville_latitude_deg"])
+                ->setParameter(":lon2", $city["ville_longitude_deg"])
+                ->orderBy("dist");
+        }
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
     // /**

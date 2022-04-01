@@ -49,6 +49,8 @@
 		<div class="container">
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 				{% for housing in housings %}
+				{% set dist = housing["dist"] %}
+        		{% set housing = housing[0] %}
 					<div class="col">
 						<div class="card shadow-sm">
 							<svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveaspectratio="xMidYMid slice" focusable="false">
@@ -58,6 +60,7 @@
 							<div class="card-body">
 								<p class="card-title">{{housing.title}}</p>
 								<p class="card-text">{{housing.category.name}} - {{housing.city}}</p>
+								<p class="card-text">Distance : {{ dist | round }} km de {{ housing.city | capitalize }}</p>
 								<p class="card-text">{{housing.dailyPrice}}€/nuit</p>
 								<div class="d-flex justify-content-between align-items-center">
 									<div class="btn-group">

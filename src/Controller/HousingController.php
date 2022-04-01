@@ -59,13 +59,17 @@ class HousingController extends AbstractController
         $form = $this->createForm(HousingType::class, $housing);
         $form->handleRequest($request);
 
-        $housing->setModifiedAt(new \Datetime());
-        $housing->setCreatedAt(new \Datetime());
-        $housing->setOwner($user);
-        $housing->setIsVisible(false);
-        $housing->setIsDeleted(false);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            $city = json_decode($form->get("city")->getData());
+            $housing->setModifiedAt(new \Datetime())
+                    ->setCreatedAt(new \Datetime())
+                    ->setOwner($user)
+                    ->setIsVisible(false)
+                    ->setIsDeleted(false)
+                    ->setCity($city[0])
+                    ->setLatitude($city[1])
+                    ->setLongitude($city[2]);
             // $post = $form->getData();
             $manager->persist($housing); //prépare le sql
             $manager->flush(); //exécute le sql, indispensable!!
@@ -104,13 +108,21 @@ class HousingController extends AbstractController
 
     #[Route('/delete/{id}', name: 'delete-housing')]
     #[IsGranted('ROLE_USER')]
-    public function index(Housing $housing, EntityManagerInterface $manager): Response
+    public function index(Housing $housing, EntityManagerInterface $manager, BookingRepository $bookingRepository): Response
     {
         // dd($housing->getBookings()->isEmpty());
         if($housing->getBookings()->isEmpty()) {
             $manager->remove($housing);
         } else {
             $housing->setIsVisible(false);
+            $housing->setIsDeleted(true);
+           
+            $bookings = $bookingRepository->findBy(['housing' => $housing]);
+            
+            // $bookings = $housing->getBookings();
+            foreach($bookings as $booking) {
+                $manager->remove($booking);
+            }
             $manager->persist($housing); //prépare le sql
         }
         $manager->flush(); //exécute le sql, indispensable!!
