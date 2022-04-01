@@ -9,4 +9,23 @@
 import './styles/app.css';
 
 // start the Stimulus application
-import './bootstrap';
+import 'bootstrap';
+
+const formBed = document.querySelector('.form-bed');
+const ul = document.querySelector('.beds');
+const saveButton = document.querySelector("#save");
+
+function addFormToCollection(e){
+    const li = document.createElement('li');
+    li.innerHTML = formBed.innerHTML.replace(/__name__/g, ul.dataset.index)
+
+    ul.appendChild(li);
+    ul.dataset.index++;
+}
+
+const addItem = document.querySelector("#add_item_link");
+
+addItem.addEventListener("click", addFormToCollection);
+saveButton.addEventListener("click", () => {
+    formBed.remove();
+})

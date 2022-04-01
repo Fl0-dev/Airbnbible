@@ -1,6 +1,21 @@
+{% extends 'base.html.twig' %}
+
 {% block body %}
 {#    {{ dump(housing) }}#}
     <h1>{{ housing.owner.firstname }} {{ housing.owner.lastname }} vous propose 1 {{ housing.category.name }}</h1>
 
+    <p>{{ housing.description }}</p>
+
     <p>Visible au {{ housing.adress }} dans la ville de {{ housing.city }}, à {{ housing.dailyPrice }} euros par nuit !</p>
+
+    <p><a href="{{ path('housing_update', {id: housing.id}) }}">Modifier la propriété</a></p>
+
+    <a href="{{ path("housing_noVisible", {id:housing.id}) }}" class="btn btn-info text-light">Passer en mode non visible</a>
+
+    <a href="{{ path('add_room', {housing: housing.id}) }}" class="btn btn-info text-light">Ajouter une chambre</a>
+
+    <a href="{{ path('booking', {id: housing.id}) }}" class="btn btn-info text-light">Réserver</a>
+
+    <a href="{{ path("housing_noVisible", {id:housing.id}) }}" class="btn btn-danger">Supprimer</a>
 {% endblock %}
+

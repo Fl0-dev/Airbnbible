@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Propriétés{% endblock %}
+
+{% block body %}
+    <h1 class="h4 mt-2"> {{ housing.adress }}</h1>
+
+    {{ form_start(form) }}
+        <ul class="beds" data-index="{{ form.bedRooms|length > 0 ? form.bedRooms|last.vars.name + 1 : 0}}">
+            <div>
+                {{form_row(form.size)}}
+            </div>
+            {% for bedRoom in form.bedRooms %}
+                <li>{{ bedRoom.quantity }}</li>
+                <li>{{ bedRoom.bed }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="form-bed visually-hidden">
+            {{ form_widget(form.bedRooms.vars.prototype) }}
+        </div>
+
+        <button type="submit" class="btn btn-success my-2" id="save">Enregistrer</button>
+    {{ form_end(form) }}
+    <button type="button" id="add_item_link" class="btn bg-dark text-light">Add a bed</button>
+{% endblock %}

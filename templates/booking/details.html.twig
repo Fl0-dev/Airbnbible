@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Réservation de <a href="{{ path('housingDetails', {id: booking.housing.id}) }}">{{ booking.housing.title }}</a></h1>
+
+    <p>Date d'entrée : {{ booking.entryDate | date("d/m/Y") }}</p>
+    <p>Date de sortie : {{ booking.exitDate | date("d/m/Y") }}</p>
+
+    <p>{{ booking.housing.description }}</p>
+{% endblock %}

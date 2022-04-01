@@ -39,7 +39,7 @@ class Housing
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class)]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Room::class, cascade: ["persist", "remove"])]
     private $rooms;
 
     #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings')]
@@ -54,6 +54,18 @@ class Housing
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class)]
     private $photos;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $description;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $title;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $latitude;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $longitude;
 
     public function __construct()
     {
@@ -274,6 +286,54 @@ class Housing
                 $photo->setHousing(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?string $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?string $longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }

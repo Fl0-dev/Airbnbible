@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Housing;
+use App\Entity\HousingCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -43,6 +44,44 @@ class HousingRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function findLastHousings(int $number){
+        return $this->createQueryBuilder('h')
+            ->where('h.isVisible = true')
+            ->orderBy('h.id', 'DESC')
+            ->setMaxResults($number)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findBySearch($data): array
+    {
+        $entryDate = $data['entryDate'];
+        $exitDate = $data['exitDate'];
+        $nbGuest = $data['availablePlaces'];
+        $category = $data['category'];
+        $qb =$this->createQueryBuilder('h')
+            ->leftJoin('h.bookings', 'b');
+        if ($entryDate) {
+            $qb->andWhere('b.exitDate > :entryDate OR b.entryDate > :entryDate')
+                ->setParameter('entryDate', $entryDate);
+        }
+        if ($exitDate) {
+            $qb->andWhere('b.entryDate < :exitDate OR b.exitDate < :exitDate')
+                ->setParameter('exitDate', $exitDate);
+        }
+        if ($nbGuest) {
+            $qb->andWhere('h.availablePlaces >= :nbGuest')
+                ->setParameter('nbGuest', $nbGuest);
+        }
+        if ($category) {
+            $qb->orWhere('h.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
     // /**

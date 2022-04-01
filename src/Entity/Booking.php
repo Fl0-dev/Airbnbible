@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking
@@ -22,7 +24,7 @@ class Booking
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $modifiedAt;
 
     #[ORM\Column(type: 'integer')]
@@ -123,5 +125,15 @@ class Booking
         $this->housing = $housing;
 
         return $this;
+    }
+
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context){
+        if($this->getEntryDate()>$this->getExitDate()){
+            $context->buildViolation("La date d'entrée doit etre antérieure à la date de sortie")
+                    ->atPath('entryDate')
+                    ->addViolation();
+        }
     }
 }

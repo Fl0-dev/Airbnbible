@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation{% endblock %}
+
+{% block body %}
+    <h2 class="h4 mt-2">Propriété {% if housing is defined %}{{ housing.adress}}{% endif %}</h2>
+
+    {{ form_start(form) }}
+        <div class="form-group">
+                        <div class="">
+                            {{form_row(form.entryDate)}}
+                        </div>
+                        <div class="">
+                            {{form_row(form.exitDate)}}
+                        </div>
+            {#            <div class="">#}
+            {#                {{form_row(form.dailyPrice)}}#}
+            {#            </div>#}
+            {#            <div class="">#}
+            {#                {{form_row(form.postalCode)}}#}
+            {#            </div>#}
+            {#        <div class="input-group">#}
+            {#            {{form_row(form.city)}}#}
+            {#        </div>#}
+            {#            <div class="">#}
+            {#                {{form_row(form.category)}}#}
+            {#            </div>#}
+            {#            <div class="">#}
+            {#                {{form_row(form.equipments)}}#}
+            {#            </div>#}
+            <button type="submit" class="btn btn-success my-2">Enregistrer</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

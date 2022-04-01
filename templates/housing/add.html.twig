@@ -1,33 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout d'une propriété{% endblock %}
+{% block title %}Propriétés{% endblock %}
 
 {% block body %}
-    <h2 class="h4 mt-2">Ajouter une propriété</h2>
+    <h2 class="h4 mt-2">Propriété {% if housing is defined %}{{ housing.adress}}{% endif %}</h2>
 
     {{ form_start(form) }}
-        <div class="input-group">
-            {{form_row(form.adress)}}
+        <div class="form-group">
+            <button type="submit" class="btn btn-success my-2">Enregistrer</button>
         </div>
-        <div class="input-group">
-            {{form_row(form.availablePlaces)}}
-        </div>
-        <div class="input-group">
-            {{form_row(form.dailyPrice)}}
-        </div>
-        <div class="col-6 mh-23">
-            {{form_row(form.postalCode)}}
-        </div>
-{#        <div class="input-group">#}
-{#            {{form_row(form.city)}}#}
-{#        </div>#}
-        <div class="input-group">
-            {{form_row(form.category)}}
-        </div>
-        <div class="input-group">
-            {{form_row(form.equipments)}}
-        </div>
-
-        <button type="submit" class="btn btn-success my-2">Enregistrer</button>
     {{ form_end(form) }}
 {% endblock %}

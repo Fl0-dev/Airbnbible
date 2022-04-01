@@ -22,7 +22,7 @@ class Room
     #[ORM\JoinColumn(nullable: false)]
     private $housing;
 
-    #[ORM\OneToMany(mappedBy: 'room', targetEntity: BedRoom::class)]
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: BedRoom::class, cascade: ["persist","remove"])]
     private $bedRooms;
 
     public function __construct()

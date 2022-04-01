@@ -14,6 +14,10 @@
         {% endblock %}
     </head>
     <body>
+    <header class="container-fluid">
+        <a href="{{ path('home') }}">Accueil</a>
+        <a href="{{ path('search') }}">Recherche</a>
+    </header>
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-{{ label }}">
@@ -21,6 +25,8 @@
             </div>
         {% endfor %}
     {% endfor %}
-    {% block body %}{% endblock %}
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
     </body>
 </html>
