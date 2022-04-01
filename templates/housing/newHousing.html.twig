@@ -3,24 +3,24 @@
 {% block title %}{{ parent() }} | Création{% endblock %}
 
 {% block body %}
-    <section class="new-post-form container">
+    <section class="container">
         <h1>Enregistrer un logement</h1>
         {{form_start(form)}}
         {{form_widget(form)}}
         <button class="btn-primary btn-lg">Enregistrer</button>
         {{form_end(form)}}
         <br>
-        {% if house.rooms is not empty%}
-    {% for room in house.rooms %}
-        <div class="card">
-            <p> Chambre{{ room.id }}<a href="#" class="btn btn-danger">Supp</a></p>
-            <p> Nombre de lit : {{ room.bedrooms|length }}</p>
-            {% for bed in room.bedrooms %}
-                <p> Lit{{ bed.id }}<a href="#" class="btn btn-danger">Supp</a></p>
-            {% endfor %}
+        {% if house is defined and house.rooms is not empty %}
+            {% for room in house.rooms %}
+                <div class="card">
+                    <p> Chambre{{ room.id }}<a href="#" class="btn btn-danger">Supp</a></p>
+                    <p> Nombre de lit : {{ room.bedrooms|length }}</p>
+                    {% for bed in room.bedrooms %}
+                        <p> Lit{{ bed.id }}<a href="#" class="btn btn-danger">Supp</a></p>
+                    {% endfor %}
 
-        </div>
-    {% endfor %}
+                </div>
+            {% endfor %}
         {% endif %}
     </section>
 

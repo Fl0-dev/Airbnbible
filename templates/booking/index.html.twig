@@ -1,20 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BookingController!{% endblock %}
+{% block title %}{{ parent() }} | Réservation{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <section class="container search-form">
+        <a href="#" class="btn btn-dark">Trouver une nouvelle destination 🏝 </a>
+    </section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/SymfonyProjects/Airbnbible/src/Controller/BookingController.php'|file_link(0) }}">src/Controller/BookingController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/SymfonyProjects/Airbnbible/templates/booking/index.html.twig'|file_link(0) }}">templates/booking/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <section class="container">
+        <h1>Mes réservations</h1>
+        {% for reservation in reservations %}
+            <div class="card">
+                <h3>Du {{ reservation.entryDate|date("d-m-Y") }} au {{ reservation.exitDate|date("d-m-Y") }}</h3>
+                <p>Description : {{ reservation.housing.description }}</p>
+                <p>Réservé le {{ reservation.modifiedAt|date("d-m-Y") }}</p>
+                <p>Durée du séjour : {{ reservation.journeyTime }}</p>
+                <p>Nombre de personnes : {{ reservation.nbGuest }}</p>
+                <div class="d-flex">
+                    <a href="#" class="btn btn-danger">Annuler réservation</a>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
 {% endblock %}

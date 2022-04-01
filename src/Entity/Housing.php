@@ -17,13 +17,13 @@ class Housing
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $address;
+    private ?string $address;
 
     #[ORM\Column(type: 'integer')]
-    private $postalCode;
+    private ?int $postalCode;
 
     #[ORM\Column(type: 'integer')]
-    private $availablePlaces;
+    private ?int $availablePlaces;
 
     #[ORM\Column(type: 'integer')]
     private $dailyPrice;
@@ -42,14 +42,14 @@ class Housing
     #[ORM\JoinColumn(nullable: false)]
     private $rooms;
 
-    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings', cascade:["persist","remove"])]
+    #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'housings', cascade:["persist"])]
     private $equipments;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Ville obligatoire')]
     private $city;
 
-    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class)]
+    #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Booking::class, cascade: ['persist','remove'])]
     private $bookings;
 
     #[ORM\OneToMany(mappedBy: 'housing', targetEntity: Photo::class, cascade:["persist","remove"])]
@@ -104,17 +104,7 @@ class Housing
 
     public function getAvailablePlaces(): ?int
     {
-        $nbPlace = 0;
-        $rooms = $this->getRooms();
-        foreach($rooms as $room) {
-            $bedrooms = $room->getBedRooms();
-
-            foreach ($bedrooms as $bedRoom) {
-                $nbPlace = $bedRoom->getQuantity() * $bedRoom->getBed()->getNbPlace();
-            }
-        }
-
-        return $this->availablePlaces = $nbPlace;
+        return $this->availablePlaces;
     }
 
     public function setAvailablePlaces(int $availablePlaces): self
@@ -332,5 +322,19 @@ class Housing
         $this->modifiedAt = $modifiedAt;
 
         return $this;
+    }
+
+    public function avaibalePlaceMax()
+    {
+        $nbPlace = 0;
+        $rooms = $this->getRooms();
+        foreach ($rooms as $room) {
+            $bedrooms = $room->getBedRooms();
+
+            foreach ($bedrooms as $bedRoom) {
+                $nbPlace = $bedRoom->getQuantity() * $bedRoom->getBed()->getNbPlace();
+            }
+        }
+        return $nbPlace;
     }
 }

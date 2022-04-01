@@ -37,8 +37,7 @@ class HousingFormSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
 
         if($housing->getId() === null) {
-            $form->add('availablePlaces')
-                ->add('dailyPrice')
+            $form->add('dailyPrice')
                 ->add('address')
                 ->add('postalCode',TextType::class,[
                     //'mapped' => false
@@ -47,6 +46,7 @@ class HousingFormSubscriber implements EventSubscriberInterface
                     'class' => HousingCategory::class,
                     'choice_label' => 'name'
                 ])
+                ->add('availablePlaces')
                 ->add('equipments', EntityType::class, [
                     'class' => Equipment::class,
                     'choice_label' => 'name',

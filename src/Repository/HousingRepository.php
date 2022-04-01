@@ -6,6 +6,7 @@ use App\Entity\Housing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,6 +44,47 @@ class HousingRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+
+     /**
+      * @return Housing[] Returns an array of Housing objects
+      */
+    public function findBySearch($data): array
+    {
+        $entryDate = $data['entryDate'];
+        $exitDate = $data['exitDate'];
+        $nbGuest = $data['nbGuest'];
+        $category = $data['category'];
+        $localisation = $data['localisation'];
+
+        $qb =$this->createQueryBuilder('h')
+        ->leftJoin('h.bookings', 'b');
+        if ($entryDate) {
+            $qb->andWhere('b.exitDate > :entryDate OR b.exitDate is null')
+                ->setParameter('entryDate', $entryDate);
+        }
+        if ($exitDate) {
+            $qb->andWhere('b.entryDate > :exitDate OR b.entryDate is null')
+                ->setParameter('exitDate', $exitDate);
+        }if ($nbGuest) {
+            $qb->andWhere('h.availablePlaces >= :nbGuest')
+//                $qb->join('h.rooms', 'r')
+//                    ->join('r.bedRooms', 'br')
+                   ->setParameter('nbGuest', $nbGuest);
+        }
+        if ($category) {
+            $qb->andWhere('h.category = :category')
+                ->setParameter('category', $category);
+        }
+        if ($localisation) {
+            $qb->andWhere('h.postalCode LIKE :localisation')
+                ->setParameter('localisation', '%'. $localisation .'%');
+        }
+
+        $query = $qb->getQuery();
+        return $query->execute();
+
     }
 
     // /**

@@ -37,6 +37,7 @@ class HousingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            //$housing->setAvailablePlaces($housing->avaibalePlaceMax());
             $entityManager->persist($housing);
             $entityManager->flush();
             $this->addFlash('success', 'Le logement a bien été créé');

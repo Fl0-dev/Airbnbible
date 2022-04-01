@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking
@@ -32,9 +34,24 @@ class Booking
     #[ORM\JoinColumn(nullable: false)]
     private $client;
 
-    #[ORM\ManyToOne(targetEntity: Housing::class, inversedBy: 'bookings')]
+    #[ORM\ManyToOne(targetEntity: Housing::class, cascade: ['persist','remove'], inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
     private $housing;
+
+    #[ORM\Column(type: 'integer')]
+    private $NbGuest;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $journeyTime;
+
+    #[Assert\Callback]
+    public function validateDate(ExecutionContextInterface $context){
+        if($this->getEntryDate() > $this->getExitDate()) {
+            $context->buildViolation("La date d'entrée doit être antérieure à la date de sortie")
+                ->atPath('entryDate')
+                ->addViolation();
+        }
+    }
 
     public function getId(): ?int
     {
@@ -124,4 +141,29 @@ class Booking
 
         return $this;
     }
+
+    public function getNbGuest(): ?int
+    {
+        return $this->NbGuest;
+    }
+
+    public function setNbGuest(int $NbGuest): self
+    {
+        $this->NbGuest = $NbGuest;
+
+        return $this;
+    }
+
+    public function getJourneyTime(): ?int
+    {
+        return $this->journeyTime;
+    }
+
+    public function setJourneyTime(?int $journeyTime): self
+    {
+        $this->journeyTime = $journeyTime;
+
+        return $this;
+    }
+
 }

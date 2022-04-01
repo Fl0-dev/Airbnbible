@@ -3,6 +3,13 @@
 {% block title %}{{parent()}} | home{% endblock %}
 
 {% block body %}
+<section class="form-search container">
+    {{form_start(form)}}
+    {{form_widget(form)}}
+    <button class="btn-primary btn-lg">Search</button>
+    {{form_end(form)}}
+</section>
+
 
 <section class="container">
     <div class="home-section">
@@ -12,7 +19,11 @@
             {% for house in houses %}
                 <div class="card mt-2">
                     <div class="card-body">
-                        <h5 class="card-title">{{ house.category.name }} <a href="{{ path('deleteHousing', {id:house.id}) }}" class="btn btn-danger">Supp</a></h5>
+                        <h5 class="card-title">{{ house.category.name }}
+                            {% if app.user == house.owner %}
+                                <a href="{{ path('deleteHousing', {id:house.id}) }}" class="btn btn-danger">Supp</a>
+                            {% endif %}
+                        </h5>
                         <p class="card-text">{{ house.description|slice(0, 50) ~ '...'}} </p>
                         <p>
                             Hôte : <a href="#" class="card-link mr-4">{{ house.owner.firstname }} {{ house.owner.lastname }}</a>
@@ -25,7 +36,7 @@
                                     <a href="{{ path('editHousing',{id:house.id}) }}" class="btn btn-secondary">Editer</a>
                                     <a href="{{ path('addRoom',{id:house.id}) }}" class="btn btn-secondary">Ajouter chambre</a>
                                 {% elseif app.user %}
-                                    <a href="#" class="btn btn-dark">Réserver</a>
+                                    <a href="{{ path('newBooking',{id:house.id}) }}" class="btn btn-dark">Réserver</a>
                                 {% endif %}
                                 <p></p>
                             </div>
