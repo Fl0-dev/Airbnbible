@@ -65,6 +65,13 @@ class Housing
     private $modifiedAt;
 
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $latitute;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $longitude;
+
+
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
@@ -336,5 +343,29 @@ class Housing
             }
         }
         return $nbPlace;
+    }
+
+    public function getLatitute(): ?string
+    {
+        return $this->latitute;
+    }
+
+    public function setLatitute(?string $latitute): self
+    {
+        $this->latitute = $latitute;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?string $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
     }
 }

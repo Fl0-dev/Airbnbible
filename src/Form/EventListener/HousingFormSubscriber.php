@@ -69,7 +69,7 @@ class HousingFormSubscriber implements EventSubscriberInterface
 
             $conn = $this->em->getConnection();
             $sql = '
-            SELECT ville_nom FROM spec_villes_france_free
+            SELECT ville_nom, ville_latitude_deg, ville_longitude_deg FROM spec_villes_france_free
             WHERE ville_code_postal Like :code';
             $stmt = $conn->prepare($sql);
             $resultSet = $stmt->executeQuery(['code' => "%". $postalCode ."%"]);
@@ -77,11 +77,13 @@ class HousingFormSubscriber implements EventSubscriberInterface
             $cities = $resultSet->fetchAllAssociative();
             $citiesName = [];
             foreach ($cities as $city) {
-                $citiesName[$city['ville_nom']] = $city['ville_nom'];
+                $citiesName[$city['ville_nom']] = json_encode(
+                    $city['ville_nom'], $city['ville_latitude_deg'], $city['ville_longitude_deg']);
             }
 
             $form->add('city',ChoiceType::class, [
                 'choices' => $citiesName,
+
             ]);
 
 

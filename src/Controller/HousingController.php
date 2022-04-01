@@ -36,6 +36,11 @@ class HousingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //récupération des data dans city
+            $city = json_decode($form->get("city")->getData());
+            $housing->setCity($city[0])
+                ->setLatitute($city[1])
+                ->setLongitude($city[2]);
 
             //$housing->setAvailablePlaces($housing->avaibalePlaceMax());
             $entityManager->persist($housing);
