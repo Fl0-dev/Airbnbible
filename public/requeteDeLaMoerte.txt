@@ -1,5 +1,5 @@
-SELECT (sum(bed.nb_place)* br.quantity) as nbPlaces FROM housing as h
-join room as r on r.housing_id = h.id 
-join bed_room as br on br.room_id = r.id 
+SELECT h.description, sum(bed.nb_place* br.quantity) as nbPlaces FROM housing as h
+join room as r on r.housing_id = h.id
+join bed_room as br on br.room_id = r.id
 join bed as bed on bed.id = br.bed_id
-where h.id = 3
+group by h.id

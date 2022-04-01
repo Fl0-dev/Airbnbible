@@ -58,19 +58,25 @@ class HousingRepository extends ServiceEntityRepository
         $category = $data['category'];
         $localisation = $data['localisation'];
 
-        $qb =$this->createQueryBuilder('h')
-        ->leftJoin('h.bookings', 'b');
-        if ($entryDate) {
-            $qb->andWhere('b.exitDate > :entryDate OR b.exitDate is null')
-                ->setParameter('entryDate', $entryDate);
-        }
-        if ($exitDate) {
-            $qb->andWhere('b.entryDate > :exitDate OR b.entryDate is null')
+        $qb =$this->createQueryBuilder('h');
+        $qbDate = $this->createQueryBuilder('h2');
+        $qbDate = $qbDate
+            ->innerJoin('h2.bookings', 'b')
+            ->where(':entryDate between b.entryDate and b.exitDate')
+            ->orWhere(':exitDate between b.entryDate and b.exitDate')
+            ->orWhere('b.entryDate between :entryDate and :exitDate');
+        if ($entryDate && $exitDate) {
+            $qb->where($qb->expr()->notIn('h.id',$qbDate->getDQL()))
+                ->setParameter('entryDate', $entryDate)
                 ->setParameter('exitDate', $exitDate);
-        }if ($nbGuest) {
-            $qb->andWhere('h.availablePlaces >= :nbGuest')
-//                $qb->join('h.rooms', 'r')
-//                    ->join('r.bedRooms', 'br')
+        }
+        if ($nbGuest) {
+            //$qb->andWhere('h.availablePlaces >= :nbGuest')
+                $qb->join('h.rooms', 'r')
+                    ->join('r.bedRooms', 'br')
+                    ->join('br.bed','bb')
+                    ->groupBy('h')
+                    ->having('SUM(br.quantity * bb.nbPlace) >= :nbGuest')
                    ->setParameter('nbGuest', $nbGuest);
         }
         if ($category) {
